@@ -20,7 +20,7 @@ class _NewExpenseState extends State<NewExpense> {
   final TextStyle labelStyle = const TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.normal,
-    color: Color(0xFF49454F),
+    // color: Color(0xFF49454F),
   );
 
   void _presentDatePicker() async {
