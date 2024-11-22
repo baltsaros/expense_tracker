@@ -1,16 +1,6 @@
 # expense_tracker
 
-A new Flutter project.
+A simple expense tracker app that I did as a part of Udemy course on Flutter. It tracks all inserted expenses, displays them in a list (from the oldest to the newest) and shows a graph of total expenses by categories. The app support dark and light themes, responsive to the device orientation.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img src="https://github.com/baltsaros/expense_tracker/blob/main/expense_tracker_demo.gif" height="600" alt="Shopping list demo">

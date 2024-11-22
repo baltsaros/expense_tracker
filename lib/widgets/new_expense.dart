@@ -80,8 +80,78 @@ class _NewExpenseState extends State<NewExpense> {
 
   @override
   Widget build(BuildContext context) {
+    final Widget expenseField = TextField(
+      controller: _titleController,
+      maxLength: 50,
+      decoration: const InputDecoration(
+        label: Text('Expense Name'),
+      ),
+      style: labelStyle,
+    );
+
+    final Widget amountField = Expanded(
+      child: TextField(
+        controller: _amountController,
+        decoration: const InputDecoration(
+          prefixText: '\$',
+          label: Text('Spent amount'),
+        ),
+        style: labelStyle,
+        keyboardType: const TextInputType.numberWithOptions(
+          decimal: true,
+        ),
+      ),
+    );
+
+    final Widget selectDate = Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            _selectedDate == null
+                ? 'Selected Date'
+                : formatter.format(_selectedDate!),
+            style: labelStyle,
+          ),
+          IconButton(
+            onPressed: _presentDatePicker,
+            icon: const Icon(
+              Icons.calendar_month,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    final Widget categoryButton = DropdownButton(
+      value: _selectedCategory,
+      items: Category.values
+          .map(
+            (category) => DropdownMenuItem(
+              value: category,
+              child: Text(
+                category.name.toUpperCase(),
+                style: labelStyle,
+              ),
+            ),
+          )
+          .toList(),
+      onChanged: (value) {
+        if (value == null) return;
+        setState(() {
+          _selectedCategory = value;
+        });
+      },
+    );
+
+    final Widget categoryLabel = Text(
+      'Category: ',
+      style: labelStyle,
+    );
+
     final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
-    return LayoutBuilder(builder: (ctx, constraints){
+    return LayoutBuilder(builder: (ctx, constraints) {
       final width = constraints.maxWidth;
 
       return SizedBox(
@@ -95,128 +165,58 @@ class _NewExpenseState extends State<NewExpense> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _titleController,
-                        maxLength: 50,
-                        decoration: const InputDecoration(
-                          label: Text('Expense Name'),
-                        ),
-                        style: labelStyle,
+                      Expanded(
+                        child: expenseField,
                       ),
-                    ),
-                    const SizedBox(width: 24),
-                    Expanded(
-                      child: TextField(
-                        controller: _amountController,
-                        decoration: const InputDecoration(
-                          prefixText: '\$',
-                          label: Text('Spent amount'),
-                        ),
-                        style: labelStyle,
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                      ),
-                    ),
-                  ],
+                      const SizedBox(width: 24),
+                      amountField,
+                    ],
                   )
                 else
-                TextField(
-                  controller: _titleController,
-                  maxLength: 50,
-                  decoration: const InputDecoration(
-                    label: Text('Expense Name'),
-                  ),
-                  style: labelStyle,
-                ),
+                  expenseField,
                 if (width >= 600)
-                  Row(children: [
-                    DropdownButton(
-                      value: _selectedCategory,
-                      items: Category.values
-                          .map(
-                            (category) => DropdownMenuItem(
-                              value: category,
-                              child: Text(
-                                category.name.toUpperCase(),
-                                style: labelStyle,
-                              ),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        if (value == null) return;
-                        setState(() {
-                          _selectedCategory = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 24,),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            _selectedDate == null
-                                ? 'Selected Date'
-                                : formatter.format(_selectedDate!),
-                            style: labelStyle,
-                          ),
-                          IconButton(
-                            onPressed: _presentDatePicker,
-                            icon: const Icon(
-                              Icons.calendar_month,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],)
-                else
                   Row(
                     children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _amountController,
-                          decoration: const InputDecoration(
-                            prefixText: '\$',
-                            label: Text('Spent amount'),
-                          ),
-                          style: labelStyle,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                        ),
+                      categoryLabel,
+                      const SizedBox(
+                        width: 16,
                       ),
-                      // const SizedBox(width: 16,),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              _selectedDate == null
-                                  ? 'Selected Date'
-                                  : formatter.format(_selectedDate!),
-                              style: labelStyle,
-                            ),
-                            IconButton(
-                              onPressed: _presentDatePicker,
-                              icon: const Icon(
-                                Icons.calendar_month,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
+                      categoryButton,
+                      const SizedBox(
+                        width: 24,
+                      ),
+                      selectDate,
+                    ],
+                  )
+                else
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          amountField,
+                          // const SizedBox(width: 16,),
+                          selectDate,
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          categoryLabel,
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          categoryButton,
+                        ],
+                      ),
                     ],
                   ),
                 const SizedBox(
-                  height: 10,),
-                if (width >= 600)
-                  Row(children: [
+                  height: 10,
+                ),
+                Row(
+                  children: [
                     ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -228,38 +228,8 @@ class _NewExpenseState extends State<NewExpense> {
                       onPressed: _submitExpenseForm,
                       child: const Text('Save Expense'),
                     ),
-                  ],)
-                else
-                  Row(children: [
-                      Text(
-                        'Category: ',
-                        style: labelStyle,
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      DropdownButton(
-                        value: _selectedCategory,
-                        items: Category.values
-                            .map(
-                              (category) => DropdownMenuItem(
-                                value: category,
-                                child: Text(
-                                  category.name.toUpperCase(),
-                                  style: labelStyle,
-                                ),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          setState(() {
-                            _selectedCategory = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                  ],
+                )
               ],
             ),
           ),
